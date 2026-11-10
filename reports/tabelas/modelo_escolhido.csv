@@ -1,0 +1,9 @@
+,valor
+modelo,Random Forest
+maior_auc_cv,Stacking
+limite_1ep,0.7046573398170732
+empatados_1ep,"['Bagging (árvores)', 'Random Forest', 'Gradient Boosting', 'HistGradientBoosting', 'XGBoost', 'Voting (soft)', 'Stacking']"
+limiar_viral_visualizacoes,6900000.0
+limiar_decisao_f1,0.19646474487317456
+colunas,"['seguidores', 'curtidas_autor_outros', 'videos_autor', 'curtidas_por_video_autor', 'comprimento_legenda', 'n_palavras', 'n_hashtags', 'n_hashtags_genericas', 'n_mencoes', 'n_emojis', 'tem_legenda', 'tem_pergunta', 'tem_exclamacao', 'prop_maiusculas', 'prop_ascii', 'tem_acento_pt', 'alfabeto_arabe', 'kf_adult_media', 'kf_adult_max', 'kf_medical_media', 'kf_medical_max', 'kf_spoofed_media', 'kf_spoofed_max', 'kf_violence_media', 'kf_violence_max', 'kf_racy_media', 'kf_racy_max', 'hashtags_texto']"
+taxa_viral_treino,0.2014974493993747
