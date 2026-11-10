@@ -1,0 +1,5 @@
+modelo,cenario,auc_cv_media,auc_cv_desvio,auc_teste
+Regressão Logística,pré-publicação (usado),0.6927278212119595,0.017834472255495858,0.6992115702547712
+Regressão Logística,+ curtidas/comentários/compart./salvamentos (vazamento),0.9379231621469037,0.001346006114272508,0.9418895012540693
+Random Forest,pré-publicação (usado),0.706944857865266,0.019655310060662526,0.7137536729271317
+Random Forest,+ curtidas/comentários/compart./salvamentos (vazamento),0.9394533956422102,0.002341460155649028,0.9472753120005957

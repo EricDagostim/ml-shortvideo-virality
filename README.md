@@ -54,7 +54,13 @@ src/
 ├── experimentos_complementares.py# vazamento, ablação criador×conteúdo e validação temporal
 ├── interpretar.py                # permutation importance, importância por impureza, efeito médio, hashtags
 ├── clustering.py                 # K-Means de perfis de conteúdo (cotovelo, silhueta, ARI, PCA)
-└── recomendar.py                 # CLI: avalia uma legenda e sugere variações
+├── recomendar.py                 # núcleo do assistente + CLI: avalia uma legenda e sugere variações
+└── app.py                        # interface local (FastAPI) que serve interface/index.html
+interface/
+└── index.html                    # página do assistente (HTML + JS puro, sem build)
+docs/
+├── README.md                     # índice dos materiais e onde cada um foi aplicado
+└── materiais_disciplina/         # slides e guias do professor (escopo dos algoritmos)
 reports/
 ├── RELATORIO.md                  # relatório final
 ├── figuras/                      # gráficos gerados
@@ -74,11 +80,30 @@ python3 -m venv .venv
 .venv/bin/python -m src.experimentos_complementares
 .venv/bin/python -m src.interpretar
 .venv/bin/python -m src.clustering
+.venv/bin/python -m src.app
 ```
 
 A comparação completa leva cerca de 30–40 min em 16 núcleos.
 
-### Usando o algoritmo para avaliar um vídeo
+### 🖥️ Interface local (recomendado)
+
+```bash
+.venv/bin/python -m src.app
+```
+
+Abra **http://127.0.0.1:8765** (ou escolha outra porta com `--porta 9000`). A página tem três abas:
+
+- **Avaliar vídeo:** cole a legenda, informe seu perfil (seguidores, nº de vídeos e curtidas totais) e veja a probabilidade de o vídeo ficar entre os 20% mais vistos, o percentil, a **confiabilidade** da previsão e as variações da legenda que o modelo estima que aumentam ou diminuem a chance. O botão **usar** aplica a variação e reavalia.
+- **Comparação dos modelos:** a tabela dos 14 algoritmos e os gráficos da comparação.
+- **Hashtags:** o efeito médio estimado de adicionar cada uma das hashtags mais frequentes.
+
+Também dá para abrir já avaliando, via URL: `http://127.0.0.1:8765/?legenda=minha%20legenda%20%23fyp&seguidores=50000&videos=120&curtidas=900000`
+
+![Interface](reports/figuras/15_interface.png)
+
+> Sem os três campos do perfil a confiabilidade é **baixa** (AUC ≈ 0,56): o conteúdo da legenda sozinho carrega pouco sinal. Com o perfil, AUC ≈ 0,74 em criadores nunca vistos no treino.
+
+### Usando o algoritmo pela linha de comando
 
 ```bash
 .venv/bin/python -m src.recomendar \
@@ -90,4 +115,4 @@ A saída traz a probabilidade de viralizar, o percentil em relação aos vídeos
 
 ## 🛠️ Stack
 
-Python 3 · pandas · NumPy · SciPy · scikit-learn · XGBoost · Matplotlib · Seaborn · joblib
+Python 3 · pandas · NumPy · SciPy · scikit-learn · XGBoost · Matplotlib · Seaborn · joblib · FastAPI + Uvicorn (interface)

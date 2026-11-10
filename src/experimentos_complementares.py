@@ -92,7 +92,9 @@ def experimento_temporal(estimador):
     colunas = colunas_entrada()
     pipeline = pipeline_para(estimador)
     pipeline.fit(treino[colunas], treino[COLUNA_ALVO])
-    auc = roc_auc_score(teste[COLUNA_ALVO], pontuacoes(pipeline, teste[colunas]))
+    escores = pontuacoes(pipeline, teste[colunas])
+    auc = roc_auc_score(teste[COLUNA_ALVO], escores)
+    com_autor = teste["seguidores"].notna().values
     resultado = {
         "treino_ate": str((corte - pd.Timedelta(days=1)).date()),
         "teste_a_partir_de": str(corte.date()),
@@ -101,9 +103,63 @@ def experimento_temporal(estimador):
         "dias_coleta": len(dias),
         "taxa_viral_teste": teste[COLUNA_ALVO].mean(),
         "auc_teste_temporal": auc,
+        "auc_temporal_com_autor": roc_auc_score(teste[COLUNA_ALVO][com_autor], escores[com_autor]),
+        "auc_temporal_sem_autor": roc_auc_score(teste[COLUNA_ALVO][~com_autor], escores[~com_autor]),
+        "pct_autor_ausente_treino": treino["seguidores"].isna().mean(),
+        "pct_autor_ausente_teste": teste["seguidores"].isna().mean(),
     }
     print(f"[temporal] {resultado}", flush=True)
     return pd.DataFrame([resultado])
+
+
+def identificador_criador(df):
+    assinatura = (
+        df["seguidores"].astype(str)
+        + "|" + (df["curtidas_autor_outros"] + df["curtidas"]).astype(str)
+        + "|" + df["videos_autor"].astype(str)
+    )
+    return pd.Series(np.where(df["seguidores"].notna(), assinatura, "ausente_" + df["id"]), index=df.index)
+
+
+def experimento_identidade(escolhido, treino, teste, colunas):
+    criadores_treino = set(identificador_criador(treino))
+    criador_teste = identificador_criador(teste)
+    visto = criador_teste.isin(criadores_treino).values
+    com_autor = teste["seguidores"].notna().values
+    y = teste[COLUNA_ALVO].values
+    escores = pontuacoes(escolhido, teste[colunas])
+    grupos = {
+        "todos os vídeos de teste": np.ones(len(y), dtype=bool),
+        "criador também presente no treino": visto,
+        "criador nunca visto no treino": ~visto,
+        "criador nunca visto, com dados de perfil": ~visto & com_autor,
+        "sem dados do criador": ~com_autor,
+    }
+    linhas = [
+        {"subconjunto": nome, "n": int(m.sum()), "taxa_viral": float(y[m].mean()), "auc_teste": roc_auc_score(y[m], escores[m])}
+        for nome, m in grupos.items()
+    ]
+    tabela = pd.DataFrame(linhas)
+    print(tabela.round(4).to_string(index=False), flush=True)
+    return tabela
+
+
+def ausencia_por_dia():
+    df = montar_tiktok()
+    tabela = df.groupby("dia_coleta").agg(
+        videos=("id", "size"),
+        mediana_visualizacoes=("visualizacoes", "median"),
+        pct_autor_ausente=("seguidores", lambda s: s.isna().mean()),
+    ).reset_index()
+    fig, ax = plt.subplots(figsize=(10, 4))
+    ax.bar(tabela["dia_coleta"].dt.strftime("%d/%m"), 100 * tabela["pct_autor_ausente"], color="#8172B2")
+    ax.set_ylabel("% de vídeos sem dados do criador")
+    ax.set_title("Ausência dos dados do criador por dia de coleta")
+    ax.tick_params(axis="x", rotation=60)
+    fig.tight_layout()
+    fig.savefig(FIGURAS_DIR / "14_ausencia_criador_por_dia.png", dpi=130)
+    plt.close(fig)
+    return tabela
 
 
 def grafico(vazamento, ablacao, temporal, auc_aleatorio):
@@ -154,6 +210,10 @@ def main():
     vazamento.to_csv(TABELAS_DIR / "experimento_vazamento.csv", index=False)
     ablacao.to_csv(TABELAS_DIR / "experimento_ablacao.csv", index=False)
     temporal.to_csv(TABELAS_DIR / "experimento_temporal.csv", index=False)
+    experimento_identidade(escolhido, treino, teste, metadados["colunas"]).to_csv(
+        TABELAS_DIR / "experimento_identidade_criador.csv", index=False
+    )
+    ausencia_por_dia().to_csv(TABELAS_DIR / "ausencia_criador_por_dia.csv", index=False)
     grafico(vazamento, ablacao, temporal, auc_aleatorio)
 
 

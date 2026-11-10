@@ -1,0 +1,2 @@
+treino_ate,teste_a_partir_de,n_treino,n_teste,dias_coleta,taxa_viral_teste,auc_teste_temporal,auc_temporal_com_autor,auc_temporal_sem_autor,pct_autor_ausente_treino,pct_autor_ausente_teste
+2024-12-10,2024-12-11,11314,3879,21,0.2054653261149781,0.5956327955986801,0.6846387961279958,0.5431687820356358,0.06381474279653526,0.62851250322248
