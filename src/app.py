@@ -8,8 +8,10 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from src.config import FIGURAS_DIR, MODELOS_DIR, RAIZ, TABELAS_DIR
+from src.baixar_dados import baixar
+from src.config import ARQUIVOS, DADOS_DIR, FIGURAS_DIR, MODELOS_DIR, RAIZ, TABELAS_DIR
 from src.recomendar import Avaliador
+from src.treinar_escolhido import treinar
 
 INTERFACE_DIR = RAIZ / "interface"
 
@@ -22,8 +24,7 @@ _avaliador = None
 def avaliador():
     global _avaliador
     if _avaliador is None:
-        if not (MODELOS_DIR / "modelo_escolhido.joblib").exists():
-            raise HTTPException(503, "Modelo não treinado. Rode: python -m src.treinar_comparar")
+        preparar_modelo()
         _avaliador = Avaliador()
     return _avaliador
 
@@ -84,10 +85,22 @@ def avaliar(pedido: Pedido):
     )
 
 
+def preparar_modelo():
+    if not (DADOS_DIR / ARQUIVOS["tiktok"]).exists():
+        print("Dataset não encontrado; baixando do Zenodo...", flush=True)
+        baixar()
+    if not (MODELOS_DIR / "modelo_escolhido.joblib").exists():
+        if not (TABELAS_DIR / "comparacao_modelos.csv").exists():
+            raise HTTPException(503, "Modelo não treinado. Rode: python -m src.treinar_comparar")
+        print("Modelo não encontrado; treinando o modelo escolhido (cerca de 1 minuto)...", flush=True)
+        treinar()
+
+
 def main():
     parser = argparse.ArgumentParser(description="Interface local do assistente de viralidade.")
     parser.add_argument("--porta", type=int, default=8765)
     args = parser.parse_args()
+    preparar_modelo()
     print(f"Interface em http://127.0.0.1:{args.porta}")
     uvicorn.run(app, host="127.0.0.1", port=args.porta)
 

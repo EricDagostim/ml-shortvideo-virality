@@ -54,6 +54,7 @@ src/
 ├── experimentos_complementares.py# vazamento, ablação criador×conteúdo e validação temporal
 ├── interpretar.py                # permutation importance, importância por impureza, efeito médio, hashtags
 ├── clustering.py                 # K-Means de perfis de conteúdo (cotovelo, silhueta, ARI, PCA)
+├── treinar_escolhido.py          # recria só o modelo vencedor a partir dos hiperparâmetros salvos (≈1 min)
 ├── recomendar.py                 # núcleo do assistente + CLI: avalia uma legenda e sugere variações
 └── app.py                        # interface local (FastAPI) que serve interface/index.html
 interface/
@@ -90,6 +91,8 @@ A comparação completa leva cerca de 30–40 min em 16 núcleos.
 ```bash
 .venv/bin/python -m src.app
 ```
+
+Na primeira execução, se o dataset ou o modelo não existirem, o app baixa os dados do Zenodo e treina o modelo escolhido com os hiperparâmetros vencedores salvos em `reports/tabelas/comparacao_modelos.csv` (≈ 1 minuto, via `src/treinar_escolhido.py`). Não é preciso rodar a comparação inteira para usar o assistente.
 
 Abra **http://127.0.0.1:8765** (ou escolha outra porta com `--porta 9000`). A página tem três abas:
 
