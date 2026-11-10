@@ -1,0 +1,7 @@
+,valor
+n_treino,12154.0
+n_teste,3039.0
+limiar_viral,6900000.0
+taxa_viral_treino,0.2014974493993747
+taxa_viral_teste,0.19512997696610726
+pct_autor_ausente_treino,0.20988974823103504
