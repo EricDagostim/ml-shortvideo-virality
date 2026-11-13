@@ -14,3 +14,8 @@ data/canal/
 # Modelo v2: tabelas de features do mini dataset local (Shorts de terceiros, sem licença de redistribuição) e do canal.
 # Para gerar: scripts em src/v2/ (ver o início do notebook projeto_final_v2_conteudo.ipynb).
 data/v2/
+
+# Modelo v3: base coletada do YouTube (Shorts de terceiros, sem licença de redistribuição) e modelos treinados.
+# Para gerar: python -m src.v3.coleta tudo (ver src/v3/README.md).
+data/v3/
+modelos/v3/

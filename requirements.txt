@@ -8,3 +8,16 @@ seaborn
 joblib
 fastapi
 uvicorn[standard]
+
+# v3 (src/v3: preditor antes de postar, Shorts do YouTube)
+lightgbm
+pyarrow
+pillow
+opencv-python-headless
+torch
+sentence-transformers
+open_clip_torch
+google-api-python-client
+google-auth
+google-auth-httplib2
+requests

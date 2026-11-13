@@ -56,7 +56,8 @@ src/
 ├── clustering.py                 # K-Means de perfis de conteúdo (cotovelo, silhueta, ARI, PCA)
 ├── treinar_escolhido.py          # recria só o modelo vencedor a partir dos hiperparâmetros salvos (≈1 min)
 ├── recomendar.py                 # núcleo do assistente + CLI: avalia uma legenda e sugere variações
-└── app.py                        # interface local (FastAPI) que serve interface/index.html
+├── app.py                        # interface local (FastAPI) que serve interface/index.html
+└── v3/                           # preditor antes de postar, YouTube Shorts (ver src/v3/README.md)
 interface/
 └── index.html                    # página do assistente (HTML + JS puro, sem build)
 docs/
@@ -64,6 +65,7 @@ docs/
 └── materiais_disciplina/         # slides e guias do professor (escopo dos algoritmos)
 reports/
 ├── RELATORIO.md                  # relatório final
+├── v3/                           # relatório, figuras e tabelas da v3
 ├── figuras/                      # gráficos gerados
 └── tabelas/                      # resultados em CSV
 modelos/                          # modelos treinados (.joblib, não versionados)
@@ -116,6 +118,42 @@ Também dá para abrir já avaliando, via URL: `http://127.0.0.1:8765/?legenda=m
 
 A saída traz a probabilidade de viralizar, o percentil em relação aos vídeos do treino e o efeito estimado de variações da legenda (remover hashtags genéricas, adicionar hashtags associadas a alcance, transformar o texto em pergunta etc.).
 
+## 🚀 v3 — "este Short vai estourar?" antes de postar (YouTube Shorts)
+
+O TikTok (acima) não responde à pergunta de um canal pequeno de Shorts animados. A v2
+([`notebooks/projeto_final_v2_conteudo.ipynb`](notebooks/projeto_final_v2_conteudo.ipynb)) usou 384 Shorts de 54 canais
+e chegou a AUC ≈ 0,58. A v3 junta uma base bem maior e muda o alvo para a régua do próprio canal:
+
+- **Base:** 123.178 Shorts de 523 canais do nicho (explicação animada, "e se", ciência, curiosidade; PT/EN/ES/DE/FR),
+  coletados pela aba Shorts de cada canal + YouTube Data API. Os 54 canais da v2 entraram como sementes.
+- **Alvo:** o Short **estourou** quando fez ≥ 5× a mediana dos 30 Shorts anteriores do canal **e** ≥ 5 mil views
+  (9,0% da base). Assim o tamanho do canal sai da conta.
+- **Entradas (só o que existe antes de postar):** contexto do canal, título (vetor multilíngue), capa (CLIP), 3 quadros
+  do vídeo (CLIP, cor, texto na tela), parecença com o que o canal já postou e com o que deu certo em outros canais.
+- **Modelo:** par LightGBM (classificador + regressão do múltiplo da régua), calibração isotônica e limiares de decisão
+  escolhidos fora da amostra.
+- **Validação:** 5 dobras por canal (o modelo é sempre testado em canais que nunca viu) e teste temporal.
+
+| veredito | % dos Shorts | estouram de fato |
+|---|---|---|
+| VIRAL | 0,8% | **38,6%** (4,3× a média) |
+| PROMISSOR | 17% | 20% |
+| NÃO VIRAL | 36% | 3,6% |
+
+AUC 0,698 (teste temporal 0,696); calibração no decil de cima: 23,5% previsto, 23,4% real. No canal *Simulando o
+Mundo*, os 5 Shorts auditáveis saíram NEUTRO e nenhum estourou (nenhum falso positivo).
+
+```bash
+.venv/bin/python -m src.v3.prever --entrega ../videos/entregas/simulando/<pasta>          # vídeo pronto
+.venv/bin/python -m src.v3.prever --canal simulando --titulo "E se ..." --titulo "..."      # só ideias
+```
+
+Relatório: [`reports/v3/RELATORIO_V3.md`](reports/v3/RELATORIO_V3.md) · arquitetura e como rodar:
+[`src/v3/README.md`](src/v3/README.md) · notebook:
+[`notebooks/projeto_final_v3_pre_postagem.ipynb`](notebooks/projeto_final_v3_pre_postagem.ipynb). Os dados coletados
+(`data/v3/`) e o modelo (`modelos/v3/`) ficam fora do git.
+
 ## 🛠️ Stack
 
 Python 3 · pandas · NumPy · SciPy · scikit-learn · XGBoost · Matplotlib · Seaborn · joblib · FastAPI + Uvicorn (interface)
+· v3: LightGBM · PyTorch · sentence-transformers · OpenCLIP · OpenCV · YouTube Data API
