@@ -125,6 +125,14 @@ Também se testou:
 - **Arquitetura**: árvores menores mais uma regressão do múltiplo da régua, combinadas, deram 37% de precisão no
   top 1% contra 32% de um classificador maior sozinho, com AUC dentro do canal de 0,636 contra 0,616
   (`data/v3/exp/variantes.log`).
+- **Depois do modelo final, quatro tentativas de subir a precisão do VIRAL não deram ganho** (`data/v3/exp/topo.log`):
+  - engajamento dos Shorts anteriores do canal (curtidas e comentários por view): AUC 0,51 sozinho e nada dentro
+    das faixas de dispersão;
+  - média de 5 sementes: AUC 0,700 e VIRAL com 39,2% de acerto (630 marcados) contra 38,6% (731), dentro do ruído;
+  - LambdaRank por canal e mês, treinado para escolher qual Short do canal estoura: pior (AUC 0,666);
+  - peso 3× nos canais animados pequenos: na fatia deles, a precisão no top 1% ficou igual (23%).
+  Com o que existe antes de postar, o modelo chegou ao teto destes dados. O próximo ganho real precisa de
+  informação nova (o vídeo inteiro: gancho, ritmo, áudio), não de outro algoritmo.
 
 ## O Simulando o Mundo
 
