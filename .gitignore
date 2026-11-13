@@ -5,3 +5,9 @@ data/raw/
 .kaggle_cache/
 modelos/*.joblib
 .ipynb_checkpoints/
+
+# Estudos com licença que não permite redistribuir (ver docs/estudos/README.md)
+docs/estudos/01_ling_2022/*.pdf
+
+# Dados do YouTube Analytics do canal (gerados por python -m src.canal). Tire esta linha só se quiser publicar esses números.
+data/canal/

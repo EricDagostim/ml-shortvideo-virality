@@ -15,6 +15,10 @@ Material do Prof. Dr. Rodrigo Ramos Silva (Machine Learning Clássico, 2026). El
 
 O gabarito da prova N1, que também faz parte do material, **não foi publicado**, porque o repositório é público. Os conceitos dele (ordem do pipeline, *fit* só no treino, métricas por custo do erro, não ajustar nada no teste) foram seguidos no protocolo.
 
+## Estudos de base para a próxima versão (`estudos/`)
+
+Quatro artigos sobre vídeos curtos (Ling et al. 2022; Bravin et al. 2026; Dubey et al. 2025; Violot et al. 2024), lidos na íntegra e sintetizados em [`estudos/SINTESE.md`](estudos/SINTESE.md). A síntese traz o que cada estudo mostra, o que dá para medir neste dataset e as melhorias propostas. Os PDFs e as licenças estão listados em [`estudos/README.md`](estudos/README.md).
+
 ## Artigos citados
 
 - **Dataset:** Lacerda, T. et al. *Exploring Brazilian TikTok and YouTube Shorts: A Public Dataset for Video Characterization*. BraSNAM 2025. DOI [10.5753/brasnam.2025.9244](https://doi.org/10.5753/brasnam.2025.9244) · dados: [10.5281/zenodo.15446544](https://doi.org/10.5281/zenodo.15446544)
