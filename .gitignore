@@ -11,3 +11,7 @@ docs/estudos/01_ling_2022/*.pdf
 
 # Dados do YouTube Analytics do canal (gerados por python -m src.canal). Tire esta linha só se quiser publicar esses números.
 data/canal/
+
+# Modelo v2: tabelas de features do mini dataset local (Shorts de terceiros, sem licença de redistribuição) e do canal.
+# Para gerar: scripts em src/v2/ (ver o início do notebook projeto_final_v2_conteudo.ipynb).
+data/v2/
