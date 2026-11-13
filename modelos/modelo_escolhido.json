@@ -12,7 +12,7 @@
     "Stacking"
   ],
   "limiar_viral_visualizacoes": 6900000.0,
-  "limiar_decisao_f1": 0.19646474487317456,
+  "limiar_decisao_f1": 0.2152923901512788,
   "colunas": [
     "seguidores",
     "curtidas_autor_outros",
