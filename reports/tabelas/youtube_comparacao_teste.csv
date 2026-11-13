@@ -1,0 +1,6 @@
+Modelo,Accuracy,Precision,Recall,F1,ROC AUC
+Regressão Logística,0.714,0.385,0.722,0.502,0.779
+KNN,0.806,0.638,0.07,0.126,0.766
+Árvore de Decisão,0.67,0.353,0.784,0.487,0.767
+Random Forest,0.697,0.375,0.78,0.507,0.791
+Base: sempre 'não viral',0.8,0.0,0.0,0.0,0.5
